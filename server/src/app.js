@@ -23,6 +23,14 @@ if (process.env.VERCEL_URL) {
   allowedClientOrigins.add(`https://${process.env.VERCEL_URL}`);
 }
 
+if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+  allowedClientOrigins.add(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
+}
+
+if (process.env.VERCEL_BRANCH_URL) {
+  allowedClientOrigins.add(`https://${process.env.VERCEL_BRANCH_URL}`);
+}
+
 const isAllowedOrigin = (origin) => {
   if (!origin) {
     return true;

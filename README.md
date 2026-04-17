@@ -125,6 +125,8 @@ Set these in your Vercel project settings:
 - `ALLOWED_ORIGINS` (comma-separated list for production + preview domains if needed)
 - `VITE_API_URL=/api`
 
+Do not use `http://localhost:5000` in production env vars. `localhost` only works on your own machine.
+
 Recommended CORS configuration example:
 
 ```env
@@ -135,6 +137,12 @@ ALLOWED_ORIGINS=https://your-app.vercel.app,https://your-app-git-main-your-team.
 ### 3. Redeploy after saving env vars
 
 After adding env vars, trigger a new deployment so both frontend and API use the updated values.
+
+### 4. Verify connectivity after deploy
+
+1. Open `https://your-app.vercel.app/api/health` and confirm JSON response.
+2. Open browser DevTools on your app and confirm auth/product requests target `/api/*` on your deployed domain.
+3. If requests fail, verify Vercel env vars and ensure your backend CORS allowlist includes your app domain.
 
 ### Important Vercel caveat (uploads)
 
