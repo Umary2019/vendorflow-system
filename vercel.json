@@ -3,18 +3,22 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "functions": {
-    "api/[...path].js": {
+    "api/index.js": {
       "maxDuration": 10
     }
   },
   "rewrites": [
     {
       "source": "/uploads/:path*",
-      "destination": "/api/uploads/:path*"
+      "destination": "/api?path=uploads/:path*"
     },
     {
       "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "destination": "/api?path=:path*"
+    },
+    {
+      "source": "/api",
+      "destination": "/api?path="
     },
     {
       "source": "/:path*",
