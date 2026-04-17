@@ -1,28 +1,43 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "version": 2,
   "installCommand": "npm install",
   "functions": {
     "api/index.js": {
       "maxDuration": 10
     }
   },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/uploads/:path*",
-      "destination": "/api?path=uploads/:path*"
+      "src": "api/index.js",
+      "use": "@vercel/node"
     },
     {
-      "source": "/api/:path*",
-      "destination": "/api?path=:path*"
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/api/index.js?path=uploads/$1"
     },
     {
-      "source": "/api",
-      "destination": "/api?path="
+      "src": "/api/(.*)",
+      "dest": "/api/index.js?path=$1"
     },
     {
-      "source": "/:path*",
-      "destination": "/index.html"
+      "src": "/api",
+      "dest": "/api/index.js?path="
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
