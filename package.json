@@ -1,0 +1,22 @@
+{
+  "name": "multi-vendor-marketplace",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev:restart",
+    "dev:api": "npm run dev --workspace server",
+    "dev:web": "npm run dev --workspace client",
+    "dev:up": "concurrently --names api,web --prefix-colors cyan,magenta --kill-others-on-fail \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:clean": "sh -c 'for port in 5000 5173 5174; do lsof -tiTCP:$port -sTCP:LISTEN | xargs -r kill; done'",
+    "dev:restart": "npm run dev:clean && npm run dev:up",
+    "dev:status": "sh -c 'lsof -iTCP:5173 -sTCP:LISTEN >/dev/null && lsof -iTCP:5000 -sTCP:LISTEN >/dev/null && echo \"frontend: http://localhost:5173/\" && echo \"backend: port 5000\" || (echo \"dev services are not fully running\" && exit 1)'",
+    "seed": "npm run seed --workspace server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
