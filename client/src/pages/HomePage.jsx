@@ -6,6 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { useApp } from '../context/AppContext';
 import useDebounce from '../hooks/useDebounce';
 import { useNavigate } from 'react-router-dom';
+import { demoProducts } from '../data/demoContent';
 
 export default function HomePage() {
   const { user, apiFetch, refreshCartCount, showToast } = useApp();
@@ -17,6 +18,15 @@ export default function HomePage() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const debouncedSearch = useDebounce(search, 350);
+  const demoCatalog = useMemo(() => {
+    return demoProducts.filter((product) => {
+      const matchesSearch = debouncedSearch
+        ? [product.name, product.category, product.description].join(' ').toLowerCase().includes(debouncedSearch.toLowerCase())
+        : true;
+      const matchesCategory = category ? product.category === category : true;
+      return matchesSearch && matchesCategory;
+    });
+  }, [debouncedSearch, category]);
 
   const queryString = useMemo(() => {
     const query = new URLSearchParams();
@@ -108,11 +118,34 @@ export default function HomePage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">No products found</h3>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              Try a different search term or category.
-            </p>
+          <div className="space-y-5">
+            <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Demo catalog</h3>
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                Real products are not available yet, so this starter catalog keeps the storefront useful and realistic.
+              </p>
+            </div>
+
+            {demoCatalog.length ? (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {demoCatalog.map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    badge="Demo"
+                    onAddToCart={user ? handleAddToCart : handleGuestAddToCart}
+                    addToCartLabel={user ? 'Add to cart' : 'Login to add'}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">No matching demo products</h3>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  Try a different search term or category.
+                </p>
+              </div>
+            )}
           </div>
         )
       ) : null}
