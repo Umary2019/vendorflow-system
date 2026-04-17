@@ -1,4 +1,5 @@
-const rawApiUrl = (import.meta.env.VITE_API_URL || '').trim();
+const defaultApiUrl = import.meta.env.DEV ? 'http://localhost:5000' : '';
+const rawApiUrl = (import.meta.env.VITE_API_URL || defaultApiUrl).trim();
 
 export const API_URL = rawApiUrl;
 export const FALLBACK_IMAGE_URL = 'https://via.placeholder.com/1200x900?text=Product+Image';
