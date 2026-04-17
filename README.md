@@ -93,3 +93,52 @@ npm run dev
 - GET /api/orders/my-orders
 - GET /api/orders/all
 - PATCH /api/orders/:id/status
+
+## Deploy On Vercel
+
+This repository is configured for monorepo deployment on Vercel:
+
+- React frontend is built from `client/`.
+- Express backend runs as a Vercel serverless catch-all function at `api/[...path].js`.
+- Frontend and API can share the same domain.
+
+### 1. Import the repository in Vercel
+
+- Framework preset: `Other`
+- Root directory: project root (do not set to `client` or `server`)
+
+`vercel.json` already defines:
+
+- install command: `npm install`
+- build command: `npm run build --workspace client`
+- output directory: `client/dist`
+- routing for `/api/*`
+
+### 2. Add environment variables in Vercel
+
+Set these in your Vercel project settings:
+
+- `MONGO_URI`
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN` (for example `7d`)
+- `CLIENT_URL` (your production frontend URL)
+- `ALLOWED_ORIGINS` (comma-separated list for production + preview domains if needed)
+- `VITE_API_URL=/api`
+
+Recommended CORS configuration example:
+
+```env
+CLIENT_URL=https://your-app.vercel.app
+ALLOWED_ORIGINS=https://your-app.vercel.app,https://your-app-git-main-your-team.vercel.app
+```
+
+### 3. Redeploy after saving env vars
+
+After adding env vars, trigger a new deployment so both frontend and API use the updated values.
+
+### Important Vercel caveat (uploads)
+
+Vercel serverless file storage is ephemeral. Local disk uploads are not persistent between invocations.
+
+- This project now returns a clear error if image file upload is attempted on Vercel.
+- Use image URLs for product images in production, or integrate a persistent file service (Cloudinary, S3, etc.).

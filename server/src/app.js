@@ -13,8 +13,15 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const app = express();
 
 const allowedClientOrigins = new Set(
-  [process.env.CLIENT_URL].filter(Boolean)
+  [
+    ...(process.env.CLIENT_URL || '').split(',').map((origin) => origin.trim()).filter(Boolean),
+    ...(process.env.ALLOWED_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean),
+  ]
 );
+
+if (process.env.VERCEL_URL) {
+  allowedClientOrigins.add(`https://${process.env.VERCEL_URL}`);
+}
 
 const isAllowedOrigin = (origin) => {
   if (!origin) {

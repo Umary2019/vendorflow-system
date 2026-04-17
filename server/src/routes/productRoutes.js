@@ -10,6 +10,7 @@ const {
   approveProduct,
 } = require('../controllers/productController');
 const { protect, optionalProtect, restrictTo, requireActiveAccount } = require('../middleware/authMiddleware');
+const AppError = require('../utils/AppError');
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -17,11 +18,24 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '-')}`),
 });
 const upload = multer({ storage });
+const rejectFileUploadsOnServerless = (req, res, next) => {
+  if (!process.env.VERCEL) {
+    next();
+    return;
+  }
+
+  if (req.file) {
+    next(new AppError('Image file upload is not supported on Vercel serverless storage. Please use an image URL.', 400));
+    return;
+  }
+
+  next();
+};
 
 router.get('/', optionalProtect, getProducts);
 router.get('/:id', optionalProtect, getProduct);
-router.post('/', protect, restrictTo('seller'), requireActiveAccount, upload.single('imageFile'), createProduct);
-router.patch('/:id', protect, restrictTo('seller'), requireActiveAccount, upload.single('imageFile'), updateProduct);
+router.post('/', protect, restrictTo('seller'), requireActiveAccount, upload.single('imageFile'), rejectFileUploadsOnServerless, createProduct);
+router.patch('/:id', protect, restrictTo('seller'), requireActiveAccount, upload.single('imageFile'), rejectFileUploadsOnServerless, updateProduct);
 router.delete('/:id', protect, restrictTo('seller'), requireActiveAccount, deleteProduct);
 router.patch('/:id/approve', protect, restrictTo('admin'), approveProduct);
 
