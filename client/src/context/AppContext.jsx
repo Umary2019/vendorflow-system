@@ -14,6 +14,24 @@ const applyTheme = (theme) => {
   }
 };
 
+const buildRequestUrl = (baseUrl, endpoint) => {
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  if (!baseUrl) {
+    return normalizedEndpoint;
+  }
+
+  const normalizedBase = baseUrl.replace(/\/+$/, '');
+  let normalizedPath = normalizedEndpoint.replace(/^\/+/, '');
+
+  // Prevent duplicated /api prefix when base is /api and endpoints already include /api/*.
+  if (normalizedBase.endsWith('/api') && (normalizedPath === 'api' || normalizedPath.startsWith('api/'))) {
+    normalizedPath = normalizedPath.slice(3).replace(/^\/+/, '');
+  }
+
+  return normalizedPath ? `${normalizedBase}/${normalizedPath}` : normalizedBase;
+};
+
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem('marketplace_token'));
@@ -37,7 +55,7 @@ export function AppProvider({ children }) {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      const response = await fetch(`${API_URL}${endpoint}`, {
+      const response = await fetch(buildRequestUrl(API_URL, endpoint), {
         ...options,
         headers,
       });
@@ -75,7 +93,7 @@ export function AppProvider({ children }) {
       }
 
       try {
-        const response = await fetch(`${API_URL}/api/auth/me`, {
+        const response = await fetch(buildRequestUrl(API_URL, '/api/auth/me'), {
           headers: { Authorization: `Bearer ${token}` },
         });
 
