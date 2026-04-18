@@ -28,7 +28,8 @@ const sendAuthResponse = (user, res) => {
 };
 
 const register = asyncHandler(async (req, res) => {
-  const { name, email, password, role = 'buyer' } = req.body;
+  const { name, password, role = 'buyer' } = req.body;
+  const email = String(req.body.email || '').trim().toLowerCase();
 
   if (!name || !email || !password) {
     throw new AppError('Name, email, and password are required.', 400);
@@ -56,7 +57,8 @@ const register = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { password } = req.body;
+  const email = String(req.body.email || '').trim().toLowerCase();
 
   if (!email || !password) {
     throw new AppError('Email and password are required.', 400);
