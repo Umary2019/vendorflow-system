@@ -65,7 +65,7 @@ export default function BuyerDashboard() {
         <StatsCard label="Orders placed" value={orders.length} hint="All tracked orders" />
         <StatsCard label="Cart items" value={cart.items?.length || 0} hint="Items waiting to checkout" accent="from-emerald-500 to-teal-600" />
         <StatsCard label="Cart value" value={formatCurrency(cartTotal)} hint="Current subtotal" accent="from-orange-500 to-pink-600" />
-        <StatsCard label="Recommended" value={suggestedProducts.length} hint="Demo picks to explore" accent="from-cyan-500 to-blue-600" />
+        <StatsCard label="Open orders" value={orders.filter((order) => order.status !== 'delivered').length} hint="Orders still in progress" accent="from-cyan-500 to-blue-600" />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
