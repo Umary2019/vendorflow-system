@@ -3,11 +3,9 @@ import { formatCurrency } from '../lib/api';
 import { FALLBACK_IMAGE_URL, resolveImageUrl } from '../config';
 
 export default function ProductCard({ product, onAddToCart, addToCartLabel = 'Add to cart', badge }) {
-  const productLink = product.isDemo ? '/products' : `/products/${product._id || product.id}`;
-
   return (
     <div className="surface-glass group overflow-hidden rounded-3xl shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
-      <Link to={productLink} className="relative block">
+      <Link to={`/products/${product._id || product.id}`} className="relative block">
         {badge ? (
           <span className="absolute left-4 top-4 z-10 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-700 shadow-sm backdrop-blur dark:bg-slate-950/90 dark:text-slate-200">
             {badge}

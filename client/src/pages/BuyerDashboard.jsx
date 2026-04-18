@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import StatsCard from '../components/StatsCard';
-import ProductCard from '../components/ProductCard';
 import { useApp } from '../context/AppContext';
 import { formatCurrency } from '../lib/api';
-import { demoProducts } from '../data/demoContent';
 
 export default function BuyerDashboard() {
   const { apiFetch, user } = useApp();
@@ -39,7 +37,6 @@ export default function BuyerDashboard() {
   );
 
   const recentOrders = orders.slice(0, 5);
-  const suggestedProducts = demoProducts.slice(0, 3);
 
   return (
     <div className="space-y-8">
@@ -136,12 +133,13 @@ export default function BuyerDashboard() {
           </section>
 
           <section className="rounded-3xl bg-white p-6 shadow-soft dark:bg-slate-900">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Recommended for you</h2>
-            <div className="mt-4 grid gap-4">
-              {suggestedProducts.map((product) => (
-                <ProductCard key={product._id} product={product} badge="Demo" />
-              ))}
-            </div>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Marketplace guidance</h2>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+              Explore the catalog from the main products page to see product images, pricing, and categories in one place.
+            </p>
+            <Link to="/products" className="mt-4 inline-flex rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700">
+              Browse products
+            </Link>
           </section>
         </aside>
       </div>
