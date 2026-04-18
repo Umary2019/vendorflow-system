@@ -49,10 +49,6 @@ const getProduct = asyncHandler(async (req, res) => {
 });
 
 const createProduct = asyncHandler(async (req, res) => {
-  if (req.user.status !== 'active') {
-    throw new AppError('Your seller account is pending approval.', 403);
-  }
-
   const { name, price, description, image, category, stock } = req.body;
   const resolvedImage = req.file ? `/uploads/${req.file.filename}` : image;
 

@@ -9,7 +9,7 @@ const {
   deleteProduct,
   approveProduct,
 } = require('../controllers/productController');
-const { protect, optionalProtect, restrictTo, requireActiveAccount } = require('../middleware/authMiddleware');
+const { protect, optionalProtect, restrictTo } = require('../middleware/authMiddleware');
 const AppError = require('../utils/AppError');
 
 const router = express.Router();
@@ -34,9 +34,9 @@ const rejectFileUploadsOnServerless = (req, res, next) => {
 
 router.get('/', optionalProtect, getProducts);
 router.get('/:id', optionalProtect, getProduct);
-router.post('/', protect, restrictTo('seller'), requireActiveAccount, upload.single('imageFile'), rejectFileUploadsOnServerless, createProduct);
-router.patch('/:id', protect, restrictTo('seller'), requireActiveAccount, upload.single('imageFile'), rejectFileUploadsOnServerless, updateProduct);
-router.delete('/:id', protect, restrictTo('seller'), requireActiveAccount, deleteProduct);
+router.post('/', protect, restrictTo('seller'), upload.single('imageFile'), rejectFileUploadsOnServerless, createProduct);
+router.patch('/:id', protect, restrictTo('seller'), upload.single('imageFile'), rejectFileUploadsOnServerless, updateProduct);
+router.delete('/:id', protect, restrictTo('seller'), deleteProduct);
 router.patch('/:id/approve', protect, restrictTo('admin'), approveProduct);
 
 module.exports = router;

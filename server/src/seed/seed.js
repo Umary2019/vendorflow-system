@@ -77,6 +77,16 @@ const seed = async () => {
       sellerId: seller._id,
       approved: true,
     },
+    {
+      name: 'Hydro Smart Bottle',
+      price: 45,
+      description: 'Insulated smart bottle that tracks hydration and keeps drinks cold for 24 hours.',
+      image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=1200&q=80',
+      category: 'Wellness',
+      stock: 40,
+      sellerId: seller._id,
+      approved: true,
+    },
   ]);
 
   // eslint-disable-next-line no-console
