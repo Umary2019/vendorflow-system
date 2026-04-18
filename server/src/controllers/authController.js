@@ -49,7 +49,7 @@ const register = asyncHandler(async (req, res) => {
     email,
     password,
     role,
-    status: role === 'seller' ? 'pending' : 'active',
+    status: 'active',
   });
 
   await Cart.create({ userId: user._id, items: [] });
@@ -71,6 +71,11 @@ const login = asyncHandler(async (req, res) => {
 
   if (user.status === 'blocked') {
     throw new AppError('Your account has been blocked.', 403);
+  }
+
+  if (user.role === 'seller' && user.status === 'pending') {
+    user.status = 'active';
+    await user.save();
   }
 
   sendAuthResponse(user, res);

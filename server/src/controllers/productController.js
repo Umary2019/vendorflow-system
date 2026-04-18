@@ -64,7 +64,7 @@ const createProduct = asyncHandler(async (req, res) => {
     category,
     stock,
     sellerId: req.user._id,
-    approved: false,
+    approved: true,
   });
 
   res.status(201).json({ status: 'success', product });
@@ -95,7 +95,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     updatePayload.stock = Number(updatePayload.stock);
   }
 
-  updatePayload.approved = false;
+  updatePayload.approved = true;
 
   const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updatePayload, {
     new: true,
